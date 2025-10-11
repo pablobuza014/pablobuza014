@@ -36,7 +36,7 @@ headers = {
 }
 
 def fetch_days(login, dfrom: datetime.date, dto: datetime.date):
-    """Descarga días de contribución entre [dfrom, dto) con GraphQL."""
+    """Download contribution days between [dfrom, dto) with GraphQL."""
     q = """
     query($login:String!, $from:DateTime!, $to:DateTime!){
       user(login:$login){
@@ -92,7 +92,7 @@ def fetch_days(login, dfrom: datetime.date, dto: datetime.date):
 start = datetime.date.fromisoformat(DATE_FROM)
 end   = datetime.date.fromisoformat(DATE_TO)
 if end < start:
-    log(f"Rango inválido: from={start} to={end}")
+    log(f"Invalid range: from={start} to={end}")
     sys.exit(1)
 
 log(f"User={USER} from={start} to={end}")
