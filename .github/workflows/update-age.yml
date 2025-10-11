@@ -1,0 +1,49 @@
+name: Update Age in README
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Summer (CEST, UTC+2): 00:00 Madrid = 22:00 UTC
+    - cron: '0 22 * 4-10 *'
+    # Winter (CET, UTC+1): 00:00 Madrid = 23:00 UTC
+    - cron: '0 23 * 11,12,1,2,3 *'
+
+permissions:
+  contents: write
+
+jobs:
+  update-age:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compute current age and replace placeholder
+        run: |
+          set -e
+          BIRTHDATE="2003-01-22"
+
+          # Calculate age
+          TODAY=$(date -u +%Y-%m-%d)
+          AGE=$(( ( $(date -u -d "$TODAY" +%Y%m%d) - $(date -u -d "$BIRTHDATE" +%Y%m%d) ) / 10000 ))
+
+          echo "Age computed: $AGE"
+
+          perl -0777 -pe "s/__AGE__/$AGE/g" README.md > README.md.tmp
+          mv README.md.tmp README.md
+
+      - name: Commit changes (if any)
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+          git add README.md
+          git commit -m "chore: auto-update age in README"
+          git pull --rebase
+          git push
