@@ -10,7 +10,7 @@
       alt="Identity Unlocked" />
     <!-- Typing lines (multi-line) -->
 <img
-  src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=800&size=18&pause=600&duration=3600&color=00E7F7&center=true&vCenter=true&width=900&lines=Hello%2C+I%27m+Pablo+Buza+Mira;I%27m+a+traveler+%E2%80%94+here+I%27m+in+Iraq!;Passionate+about+cybersecurity%2C+requirements+engineering%2C+and+project+management;I+am+__AGE__+years+old%2C+and+I+am+from+Spain!;Let%27s+build+something+great!"
+  src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=800&size=18&pause=600&duration=3600&color=00E7F7&center=true&vCenter=true&width=900&lines=Hello%2C+I%27m+Pablo+Buza+Mira;I%27m+a+traveler+%E2%80%94+here+I%27m+in+Iraq!;Passionate+about+cybersecurity%2C+requirements+engineering%2C+and+project+management;I+am+22+years+old%2C+and+I+am+from+Spain!;Let%27s+build+something+great!"
   alt="Intro lines (slower)" />
     <!-- Photo -->
     <br/>
