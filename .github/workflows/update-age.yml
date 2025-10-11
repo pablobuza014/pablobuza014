@@ -1,6 +1,5 @@
 # .github/workflows/update-age.yml
 name: Update Age in README
-
 on:
   workflow_dispatch: {}
   schedule:
@@ -21,31 +20,38 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Compute age and replace __AGE__
+      - name: Compute age and replace placeholders
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - run: |
           python - << 'PY'
           from datetime import date
-          import io,sys,re,os
+          import io,re
+
           BIRTH = date(2003,1,22)
           today = date.today()
           age = today.year - BIRTH.year - ((today.month, today.day) < (BIRTH.month, BIRTH.day))
-          print(f"[age] computed age = {age}")
+          stamp = today.strftime("%Y%m%d")  # cache-buster
+
           p = "README.md"
           with io.open(p, "r", encoding="utf-8") as f:
               s = f.read()
+
           s2 = re.sub(r"__AGE__", str(age), s)
+          s2 = s2.replace("%5F%5FAGE%5F%5F", str(age))
+          # Cache-buster para forzar refresco del SVG
+          s2 = s2.replace("__STAMP__", stamp)
+
           if s2 != s:
               with io.open(p, "w", encoding="utf-8", newline="\n") as f:
                   f.write(s2)
-              print("[age] README.md updated")
+              print(f"[age] README.md updated -> age={age}, stamp={stamp}")
           else:
-              print("[age] No __AGE__ placeholder found or already correct")
+              print("[age] No placeholder changed — check README has __AGE__ or %5F%5FAGE%5F%5F")
           PY
 
-      - name: Commit & push (safe)
+      - name: Commit & push
         run: |
           set -e
           git config user.name  "github-actions[bot]"
@@ -57,13 +63,7 @@ jobs:
           fi
 
           git add README.md
-          git commit -m "chore: auto-update age in README"
-
-          # sincroniza por si hubo cambios remotos
-          BRANCH="${GITHUB_REF_NAME:-main}"
-          git fetch origin "$BRANCH"
-          git pull --rebase origin "$BRANCH" || true
-
-          # push normal; si alguien movió la rama entre medias, fuerza protegida
-          git push origin HEAD:"$BRANCH" || git push --force-with-lease origin HEAD:"$BRANCH"
+          git commit -m "chore: auto-update age and cache-buster"
+          git pull --rebase origin "${GITHUB_REF_NAME:-main}" || true
+          git push
 
