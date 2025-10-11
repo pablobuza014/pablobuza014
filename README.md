@@ -330,3 +330,31 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
     alt="Thanks for visiting" />
   </div>
 
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+
+<!-- LEGAL / COPYRIGHT NOTICE -->
+<div align="center">
+  <blockquote>
+    <b>⚠️ Usage & Copyright</b><br/>
+    © Pablo Buza Mira. All rights reserved.<br/>
+    This profile, media, graphics, text and assets are proprietary.  
+    Any reproduction, redistribution, scraping, mirroring, dataset inclusion or AI/ML training using this content is
+    <b>strictly prohibited without prior written consent</b>.  
+    You may reference this page by linking to the repository/profile. For permissions, contact:
+    <a href="mailto:pablobuza014@gmail.com">pablobuza014@gmail.com</a>.
+    <br/><br/>
+    <sub>Fingerprint: HUMAN-MADE · ORIGINAL · DO NOT COPY.</sub>
+  </blockquote>
+
+  <img
+    src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=14&pause=1000&duration=3500&color=00E7F7&center=true&vCenter=true&width=520&lines=Respect+the+craft+%E2%80%94+ask+before+you+use;Stay+ethical+%E2%80%94+link+don%E2%80%99t+lift"
+    alt="Legal typing note" />
+
+</div>
+
