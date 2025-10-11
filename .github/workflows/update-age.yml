@@ -1,3 +1,4 @@
+# .github/workflows/update-age.yml
 name: Update Age in README
 
 on:
@@ -17,22 +18,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Compute current age and replace placeholder
-        run: |
-          set -e
-          BIRTHDATE="2003-01-22"
+      - name: Compute age and replace __AGE__
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          python - << 'PY'
+          from datetime import date
+          import io,sys,re,os
+          BIRTH = date(2003,1,22)
+          today = date.today()
+          age = today.year - BIRTH.year - ((today.month, today.day) < (BIRTH.month, BIRTH.day))
+          print(f"[age] computed age = {age}")
+          p = "README.md"
+          with io.open(p, "r", encoding="utf-8") as f:
+              s = f.read()
+          s2 = re.sub(r"__AGE__", str(age), s)
+          if s2 != s:
+              with io.open(p, "w", encoding="utf-8", newline="\n") as f:
+                  f.write(s2)
+              print("[age] README.md updated")
+          else:
+              print("[age] No __AGE__ placeholder found or already correct")
+          PY
 
-          # Calculate age
-          TODAY=$(date -u +%Y-%m-%d)
-          AGE=$(( ( $(date -u -d "$TODAY" +%Y%m%d) - $(date -u -d "$BIRTHDATE" +%Y%m%d) ) / 10000 ))
-
-          echo "Age computed: $AGE"
-
-          perl -0777 -pe "s/__AGE__/$AGE/g" README.md > README.md.tmp
-          mv README.md.tmp README.md
-
-      - name: Commit changes (if any)
+      - name: Commit & push (safe)
         run: |
           set -e
           git config user.name  "github-actions[bot]"
@@ -45,5 +58,12 @@ jobs:
 
           git add README.md
           git commit -m "chore: auto-update age in README"
-          git pull --rebase
-          git push
+
+          # sincroniza por si hubo cambios remotos
+          BRANCH="${GITHUB_REF_NAME:-main}"
+          git fetch origin "$BRANCH"
+          git pull --rebase origin "$BRANCH" || true
+
+          # push normal; si alguien movió la rama entre medias, fuerza protegida
+          git push origin HEAD:"$BRANCH" || git push --force-with-lease origin HEAD:"$BRANCH"
+
