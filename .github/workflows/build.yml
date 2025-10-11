@@ -1,0 +1,123 @@
+name: Build Activity Years
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Summer (CEST, UTC+2): 00:00 Madrid = 22:00 UTC
+    - cron: '0 22 * 4-10 *'
+    # Winter (CET, UTC+1): 00:00 Madrid = 23:00 UTC
+    - cron: '0 23 * 11,12,1,2,3 *'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      # ====== metrics.svg ======
+      - name: Generate metrics.svg
+        uses: lowlighter/metrics@latest
+        with:
+          filename: assets/metrics.svg
+          token: ${{ secrets.GH_TOKEN }}
+          user: pablobuza014
+          template: classic
+          base: header, activity, community, metadata
+          config_timezone: Europe/Madrid
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full
+          plugin_languages: yes
+          plugin_languages_ignored: html, css
+          plugin_languages_details: percentage
+          plugin_languages_limit: 8
+          plugin_lines: yes
+          plugin_followup: yes
+          plugin_followup_sections: repositories, user
+          plugin_habits: yes
+          plugin_habits_from: 200
+          plugin_habits_days: 14
+          plugin_habits_facts: yes
+          plugin_achievements: yes
+          plugin_achievements_display: compact
+
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dateutil matplotlib
+
+      - name: Run build_activity_years
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          # GH_USER: pablobuza014       # optional
+          # GH_FROM: "2021-01-01"       # optional
+          # GH_TO:   "2025-12-31"       # optional
+        run: python .github/scripts/build_activity_years.py
+
+
+      - name: List outputs
+        run: |
+          pwd
+          ls -la
+          ls -la assets || true
+
+
+      - name: Upload charts artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: activity-charts
+          path: |
+            assets/activity-years.svg
+            assets/activity-years-bars.svg
+            assets/metrics.svg
+          if-no-files-found: warn
+
+
+      - name: Commit assets (safe push)
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p assets
+
+          
+          [ -f assets/activity-years.svg ]       && git add assets/activity-years.svg
+          [ -f assets/activity-years-bars.svg ]  && git add assets/activity-years-bars.svg
+          [ -f assets/metrics.svg ]              && git add assets/metrics.svg
+
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
+
+         
+          git stash push --include-untracked --message "tmp-assets" || true
+
+          
+          git fetch origin "$BRANCH_NAME"
+          git pull --rebase origin "$BRANCH_NAME" || true
+
+         
+          git stash pop || true
+          [ -f assets/activity-years.svg ]       && git add assets/activity-years.svg
+          [ -f assets/activity-years-bars.svg ]  && git add assets/activity-years-bars.svg
+          [ -f assets/metrics.svg ]              && git add assets/metrics.svg
+
+          
+          git commit -m "chore: update activity charts and metrics" || true
+
+          
+          git push origin HEAD:"$BRANCH_NAME" || git push --force-with-lease origin HEAD:"$BRANCH_NAME"
