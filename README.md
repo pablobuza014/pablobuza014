@@ -1,5 +1,43 @@
 <!-- README.md -->
 
+<!-- Who am I? -->
+<div align="center">
+  <details>
+    <summary><b>🔓 WHO AM I? · CLICK TO REVEAL</b></summary>
+    <!-- Wave intro -->
+    <img
+      src="https://capsule-render.vercel.app/api?type=waving&height=110&color=0:00E7F7,50:7C3AED,100:22C55E&text=IDENTITY%20UNLOCKED&fontColor=ffffff&fontSize=22&animation=twinkling&fontAlign=50&fontAlignY=35"
+      alt="Identity Unlocked" />
+    <!-- Typing lines (multi-line) -->
+<img
+  src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=800&size=18&pause=600&duration=3600&color=00E7F7&center=true&vCenter=true&width=900&lines=Hello%2C+I%27m+Pablo+Buza+Mira;I%27m+a+traveler+%E2%80%94+here+I%27m+in+Iraq!;Passionate+about+cybersecurity%2C+requirements+engineering%2C+and+project+management;I+am+__AGE__+years+old%2C+and+I+am+from+Spain!;Let%27s+build+something+great!"
+  alt="Intro lines (slower)" />
+    <!-- Photo -->
+    <br/>
+    <img
+      src="https://drive.google.com/uc?export=view&id=1lubUglqCDT-4dE8pJahTOMslt5Avi4lS"
+      alt="Pablo Buza Mira"
+      width="260"
+      style="border-radius:50%; box-shadow:0 0 0 3px #00E7F7;" />
+    <!-- Actions -->
+    <p>
+      <a href="https://drive.google.com/file/d/1lubUglqCDT-4dE8pJahTOMslt5Avi4lS/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.shields.io/badge/VIEW%20PHOTO-111827?style=for-the-badge&logo=googledrive&logoColor=00E7F7" alt="View photo"/>
+      </a>
+      <a href="https://drive.google.com/uc?export=download&id=1lubUglqCDT-4dE8pJahTOMslt5Avi4lS" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.shields.io/badge/DOWNLOAD-111827?style=for-the-badge&logo=adobe&logoColor=F87171" alt="Download"/>
+      </a>
+    </p>
+  </details>
+</div>
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
 <!-- HERO -->
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&height=180&color=0:111827,100:0ea5e9&text=Pablo%20Buza%20Mira&fontColor=ffffff&fontAlign=50&fontAlignY=35&desc=Software%20Engineering%20Student&descAlign=50&descAlignY=65" alt="Hero banner" />
@@ -40,9 +78,33 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
 <br/>
 <br/>
 
+<!-- DOWNLOAD CV -->
+<div align="center">
+  <img
+    src="https://readme-typing-svg.herokuapp.com?font=Orbitron&weight=700&size=22&pause=1000&color=00E7F7&center=true&vCenter=true&width=900&lines=DOWNLOAD+OR+SCAN+MY+CURRICULUM+VITAE"
+    alt="DOWNLOAD O SCAN MY CURRICULUM VITAE" />
+    <a href="https://drive.google.com/uc?export=download&id=1MzVCuE64A1AkMM9hPkIr0icho1XXJUpA">
+      <img src="https://img.shields.io/badge/DOWNLOAD%20PDF-111827?style=for-the-badge&logo=adobeacrobatreader&logoColor=F87171" alt="Download CV">
+    </a>
+  <!-- QR -->
+  <p>
+    <img
+      src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https%3A%2F%2Fdrive.google.com%2Ffile%2Fd%2F1MzVCuE64A1AkMM9hPkIr0icho1XXJUpA%2Fview%3Fusp%3Dsharing"
+      alt="QR to CV" />
+  </p>
+</div>
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+
 <!-- CONTACT -->
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=20&pause=1000&duration=2500&color=16F2F2&center=true&vCenter=true&width=560&lines=You+can+also+contact+or+find+me+on" alt="Contact headline" />
+   <img
+    src="https://readme-typing-svg.herokuapp.com?font=Orbitron&weight=700&size=22&pause=1000&color=00E7F7&center=true&vCenter=true&width=900&lines=FIND+OR+CONTACT+ME+ON"
+    alt="FIND OR CONTACT ME ON..." />
 </p>
 <p align="center">
   <h3 align="center">
@@ -267,4 +329,4 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
     src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&size=26&pause=1200&color=00E7F7&center=true&vCenter=true&width=800&lines=Thanks+for+visiting!;See+you+in+the+next+commit%20%E2%9C%85;Feel+free+to+connect+%F0%9F%91%8B"
     alt="Thanks for visiting" />
   </div>
-  
+
