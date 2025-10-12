@@ -25,55 +25,79 @@ function esc(s) {
     await page.setUserAgent(
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
     );
+
     await page.goto(URL, { waitUntil: "networkidle2" });
 
+    
     try {
-      await page.waitForSelector('a[href*="/achievements/"] img', { timeout: 15000 });
+      await page.evaluate(async () => {
+        await new Promise((resolve) => {
+          let total = 0;
+          const step = () => {
+            window.scrollBy(0, Math.max(200, window.innerHeight * 0.8));
+            total += 1;
+            if (window.innerHeight + window.scrollY >= document.body.scrollHeight || total > 10) {
+              resolve();
+            } else {
+              setTimeout(step, 200);
+            }
+          };
+          step();
+        });
+        window.scrollTo(0, 0);
+      });
+    } catch (_) {}
+
+    
+    try {
+      await page.waitForSelector('img[alt^="Achievement"]', { timeout: 15000 });
     } catch (_) {}
 
     
     items = await page.evaluate(() => {
-      const imgs = Array.from(document.querySelectorAll('a[href*="/achievements/"] img'));
+      const all = Array.from(document.querySelectorAll('img[alt^="Achievement"]'));
+      const bigBadges = all.filter((img) => {
+        const r = img.getBoundingClientRect();
+        return r.width >= 96 && r.height >= 96;
+      });
+
       const uniq = new Map();
 
-      for (const img of imgs) {
+      for (const img of bigBadges) {
         const src = img.getAttribute("src");
         if (!src) continue;
 
-        const a = img.closest('a[href*="/achievements/"]');
-        const card = a ? (a.parentElement || a) : null;
+        
+        let card = img.closest("a")?.parentElement || img.closest("div");
+        if (!card) card = img.parentElement;
 
         
         let title = "";
-        if (card) {
-          const titleNode =
-            card.querySelector("h3, h4, strong") ||
-            card.querySelector('div[dir="auto"]') ||
-            a.querySelector("h3, h4, strong");
-          if (titleNode) title = (titleNode.textContent || "").trim();
-        }
+        const titleNode =
+          card.querySelector("h3, h4, strong") ||
+          card.querySelector('div[dir="auto"]') ||
+          img.closest("a")?.querySelector("h3, h4, strong");
+        if (titleNode) title = (titleNode.textContent || "").trim();
         if (!title) {
           title = (img.getAttribute("alt") || "").replace(/^Achievement:\s*/i, "").trim();
         }
 
-       
+        
         let count = "";
-        if (card) {
-          const pill = Array.from(card.querySelectorAll("span, sup"))
-            .map(n => (n.textContent || "").trim())
-            .find(t => /^x\d+$/i.test(t));
-          if (pill) count = pill;
-        }
+        const pill = Array.from(card.querySelectorAll("span, sup"))
+          .map((n) => (n.textContent || "").trim())
+          .find((t) => /^x\d+$/i.test(t));
+        if (pill) count = pill;
+
+        
+        const a = img.closest("a");
+        const href = a ? a.getAttribute("href") : null;
 
         if (!uniq.has(src)) {
-          uniq.set(src, {
-            src,
-            title,
-            count,
-            href: a ? a.getAttribute("href") : null,
-          });
+          uniq.set(src, { src, title, count, href });
         }
       }
+
       return Array.from(uniq.values());
     });
 
@@ -93,11 +117,12 @@ function esc(s) {
   const generatedAt = new Date().toISOString();
 
   const cards = items.length
-    ? items.map(it => {
-        const label = esc(it.title || "Achievement");
-        const count = it.count ? `<span style="opacity:.9"> ${esc(it.count)}</span>` : "";
-        const href = it.href ? (it.href.startsWith("http") ? it.href : `https://github.com${it.href}`) : URL;
-        return `
+    ? items
+        .map((it) => {
+          const label = esc(it.title || "Achievement");
+          const count = it.count ? `<span style="opacity:.9"> ${esc(it.count)}</span>` : "";
+          const href = it.href ? (it.href.startsWith("http") ? it.href : `https://github.com${it.href}`) : URL;
+          return `
         <a href="${href}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:#e5e7eb;">
           <div style="width:${size}px; height:${size}px; margin:0 auto; border-radius:50%; overflow:hidden; box-shadow:0 0 0 2px #1f2937;">
             <img src="${it.src}" alt="${label}" width="${size}" height="${size}" style="display:block; width:100%; height:100%; object-fit:cover;">
@@ -106,7 +131,8 @@ function esc(s) {
             ${label}${count}
           </div>
         </a>`;
-      }).join("")
+        })
+        .join("")
     : `<div style="opacity:.8;">No achievements found</div>`;
 
   const html = `<!doctype html>
@@ -137,7 +163,7 @@ function esc(s) {
   const page2 = await browser.newPage();
   await page2.setViewport({ width: width + 48, height: Math.min(height + 48, 8000) });
   await page2.setContent(html, { waitUntil: "load" });
-  await new Promise(r => setTimeout(r, 600));
+  await new Promise((r) => setTimeout(r, 600));
   await page2.screenshot({ path: OUT_FILE, fullPage: true });
   await page2.close();
 
