@@ -1,4 +1,5 @@
 // .github/scripts/build-achievements-image.js
+
 const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer");
@@ -9,7 +10,10 @@ const OUT_FILE = path.join(OUT_DIR, "achievements.png");
 const URL = `https://github.com/${USER}?tab=achievements`;
 
 function esc(s) {
-  return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return String(s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 (async () => {
@@ -25,106 +29,169 @@ function esc(s) {
     await page.setUserAgent(
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
     );
-
     await page.goto(URL, { waitUntil: "networkidle2" });
 
-  
-    try {
-      await page.evaluate(async () => {
-        await new Promise((resolve) => {
-          let n = 0;
-          const step = () => {
-            window.scrollBy(0, Math.max(200, window.innerHeight * 0.8));
-            n++;
-            if (window.innerHeight + window.scrollY >= document.body.scrollHeight || n > 10) resolve();
-            else setTimeout(step, 180);
-          };
-          step();
-        });
-        window.scrollTo(0, 0);
-      });
-    } catch (_) {}
-
     
     try {
-      await page.waitForSelector('img[alt^="Achievement"]', { timeout: 15000 });
+      await page.waitForSelector(
+        'a[href*="/achievements/"], img[alt*="Achievement"], img[class*="achievement"]',
+        { timeout: 15000 }
+      );
     } catch (_) {}
 
-
+    // ===== SCRAPING =====
     items = await page.evaluate(() => {
-  
-  const all = Array.from(document.querySelectorAll('img[alt^="Achievement"]'));
+      const clean = (s) =>
+        String(s || "")
+          .replace(/^Achievement:\s*/i, "")
+          .replace(/\s*x\d+\s*$/i, "")
+          .trim();
 
-  
-  const big = all.filter(img => {
-    const r = img.getBoundingClientRect();
-    return r.width >= 96 && r.height >= 96;
-  });
+      const getTitleFromCard = (card) => {
+        
+        const candidates = Array.from(
+          card.querySelectorAll("h3, h4, strong, div, span")
+        )
+          .map((el) => (el.textContent || "").trim())
+          .filter(
+            (t) =>
+              t &&
+              !/^x\d+$/i.test(t) &&
+              /[A-Za-z]/.test(t) &&
+              t.length <= 48
+          );
+        return candidates[0] ? clean(candidates[0]) : "";
+      };
 
-  const seen = new Set();
-  const out = [];
+      const getCountFromCard = (card) => {
+        
+        const node = Array.from(
+          card.querySelectorAll("span, sup, small, strong, div")
+        )
+          .map((el) => (el.textContent || "").trim())
+          .find((t) => /^x\d+$/i.test(t));
+        return node || "";
+      };
 
-  for (const img of big) {
-    const src = img.getAttribute("src");
-    if (!src || seen.has(src)) continue;
-    seen.add(src);
+      
+      const cards = Array.from(
+        document.querySelectorAll(
+          'a[href*="/achievements/"], a[data-hovercard-type="achievement"], div[data-test-selector="profile-collection-card"], article'
+        )
+      ).filter((el) =>
+        el.querySelector(
+          'img[class*="achievement"], img[alt*="Achievement"], img[src*="/achievements/"], img[src*="/achievements"]'
+        )
+      );
 
-    
-    const title = (img.getAttribute("alt") || "")
-      .replace(/^Achievement:\s*/i, "")
-      .trim();
+      const uniq = new Map();
 
-    
-    const card = img.closest("a") || img.parentElement;
-    let count = "";
-    if (card) {
-      const pill = Array.from(card.querySelectorAll("span, sup"))
-        .map(n => (n.textContent || "").trim())
-        .find(t => /^x\d+$/i.test(t));
-      if (pill) count = pill;
-    }
+      for (const card of cards) {
+        const img =
+          card.querySelector(
+            'img[class*="achievement"], img[alt*="Achievement"], img[src*="/achievements/"], img[src*="/achievements"]'
+          ) || card.querySelector("img");
 
-    out.push({ src, title, count });
-  }
+        if (!img) continue;
 
-  return out;
-});
+        const src = img.getAttribute("src");
+        if (!src) continue;
 
+        const a = card.closest("a") || card.querySelector("a") || card;
 
+        let title =
+          (a.getAttribute?.("aria-label") || a.getAttribute?.("title") || "") ||
+          "";
+        title = clean(title);
+        if (!title) title = getTitleFromCard(card);
+        if (!title) title = clean(img.getAttribute("alt") || "Achievement");
+
+        const count = getCountFromCard(card);
+
+        const href =
+          (a.getAttribute?.("href") || "").startsWith("http")
+            ? a.getAttribute("href")
+            : a.getAttribute("href")
+            ? `https://github.com${a.getAttribute("href")}`
+            : null;
+
+        
+        const key = `${title}__${src}`;
+        if (!uniq.has(key)) {
+          uniq.set(key, { src, title, count, href });
+        }
+      }
+
+      
+      if (!uniq.size) {
+        const imgs = Array.from(
+          document.querySelectorAll('img[alt*="Achievement"]')
+        );
+        for (const i of imgs) {
+          const src = i.getAttribute("src");
+          if (!src) continue;
+          const title = clean(i.getAttribute("alt"));
+          const count = "";
+          const href = null;
+          uniq.set(`${title}__${src}`, { src, title, count, href });
+        }
+      }
+
+      return Array.from(uniq.values());
+    });
 
     await page.close();
   } catch (e) {
     console.error("Scrape error:", e);
   }
 
-  
+  // ===== RENDER =====
+  const cols = 4;
   const size = 128;
-  const gap  = 24;
-  const headerH = 90;
+  const gap = 24;
+  const headerH = 80;
+  const nameH = 34;
+  const countH = 18;
 
-  const count = Math.max(1, items.length);
-  const cols = Math.min(8, Math.max(3, Math.ceil(Math.sqrt(count))));
-  const rows = Math.ceil(count / cols);
+  const rows = Math.max(1, Math.ceil(items.length / cols));
+  const width = cols * (size + gap) + gap;
+ 
+  const height =
+    headerH +
+    rows * (size + nameH + countH + gap) +
+    gap;
 
-  const width  = cols * (size + gap) + gap;
-  const height = headerH + rows * (size + 36 + gap) + gap;
   const generatedAt = new Date().toISOString();
 
   const cards = items.length
     ? items
         .map((it) => {
           const label = esc(it.title || "Achievement");
-          const count = it.count ? `<span style="opacity:.9"> ${esc(it.count)}</span>` : "";
-          const href = it.href ? (it.href.startsWith("http") ? it.href : `https://github.com${it.href}`) : URL;
+          const href = it.href
+            ? it.href.startsWith("http")
+              ? it.href
+              : `https://github.com${it.href}`
+            : URL;
+
+          
+          const countLine = it.count
+            ? `<div style="margin-top:2px; font:700 12px system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial; opacity:.9;">${esc(
+                it.count
+              )}</div>`
+            : "";
+
           return `
-        <a href="${href}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:#e5e7eb;">
-          <div style="width:${size}px; height:${size}px; margin:0 auto; border-radius:50%; overflow:hidden; box-shadow:0 0 0 2px #1f2937;">
-            <img src="${it.src}" alt="${label}" width="${size}" height="${size}" style="display:block; width:100%; height:100%; object-fit:cover;">
-          </div>
-          <div style="margin-top:10px; font: 600 14px system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial;">
-            ${label}${count}
-          </div>
-        </a>`;
+          <a href="${href}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:#e5e7eb;">
+            <div style="width:${size}px; height:${size}px; margin:0 auto; border-radius:50%; overflow:hidden; box-shadow:0 0 0 2px #1f2937;">
+              <img src="${it.src}" alt="${label}" width="${size}" height="${size}" style="display:block; width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div style="margin-top:10px; text-align:center;">
+              <div style="font:600 14px system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:${size}px;">
+                ${label}
+              </div>
+              ${countLine}
+            </div>
+          </a>`;
         })
         .join("")
     : `<div style="opacity:.8;">No achievements found</div>`;
@@ -133,19 +200,48 @@ function esc(s) {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>${esc(USER)} · Achievements</title>
+  <title>GitHub Achievements - ${esc(USER)}</title>
   <style>
     :root { color-scheme: dark; }
-    body { margin: 0; background: #0b1220; color: #e5e7eb; }
-    .wrap { width: ${width}px; min-height: ${height}px; padding: 24px; box-sizing: border-box; }
-    h1 { margin: 4px 0 12px 0; font: 800 22px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; letter-spacing:.3px; color:#c7d2fe; text-align:center; }
-    .grid { display: grid; grid-template-columns: repeat(${cols}, ${size}px); gap: ${gap}px; justify-content: center; }
-    .footer { margin-top: 12px; font: 500 12px system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; opacity:.7; text-align:center; }
+    body {
+      margin: 0;
+      background: #0b1220;
+      color: #e5e7eb;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial, sans-serif;
+    }
+    .wrap {
+      width: ${width}px;
+      min-height: ${height}px;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+    h1 {
+      margin: 0 0 16px 0;
+      font-weight: 800;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: .2px;
+      color: #c7d2fe;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(${cols}, ${size}px);
+      gap: ${gap}px;
+      justify-content: center;
+    }
+    .footer {
+      margin-top: 14px;
+      font-weight: 500;
+      font-size: 12px;
+      opacity: .7;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>GitHub Achievements — ${esc(USER)}</h1>
+    <h1>GitHub Achievements - ${esc(USER)}</h1>
     <div class="grid">
       ${cards}
     </div>
@@ -157,6 +253,7 @@ function esc(s) {
   const page2 = await browser.newPage();
   await page2.setViewport({ width: width + 48, height: Math.min(height + 48, 8000) });
   await page2.setContent(html, { waitUntil: "load" });
+
   await new Promise((r) => setTimeout(r, 600));
   await page2.screenshot({ path: OUT_FILE, fullPage: true });
   await page2.close();
