@@ -31,7 +31,6 @@ function esc(s) {
     );
     await page.goto(URL, { waitUntil: "networkidle2" });
 
-    
     try {
       await page.waitForSelector(
         'a[href*="/achievements/"], img[alt*="Achievement"], img[class*="achievement"]',
@@ -44,11 +43,10 @@ function esc(s) {
       const clean = (s) =>
         String(s || "")
           .replace(/^Achievement:\s*/i, "")
-          .replace(/\s*x\d+\s*$/i, "")
+          .replace(/\s*x?\s*\d+\s*$/i, "")
           .trim();
 
       const getTitleFromCard = (card) => {
-        
         const candidates = Array.from(
           card.querySelectorAll("h3, h4, strong, div, span")
         )
@@ -56,7 +54,7 @@ function esc(s) {
           .filter(
             (t) =>
               t &&
-              !/^x\d+$/i.test(t) &&
+              !/^x?\s*\d+$/i.test(t) &&
               /[A-Za-z]/.test(t) &&
               t.length <= 48
           );
@@ -65,15 +63,37 @@ function esc(s) {
 
       const getCountFromCard = (card) => {
         
-        const node = Array.from(
+        const exact = Array.from(
           card.querySelectorAll("span, sup, small, strong, div")
         )
           .map((el) => (el.textContent || "").trim())
-          .find((t) => /^x\d+$/i.test(t));
-        return node || "";
+          .find((t) => /^(?:x|×)\s*\d+$/i.test(t));
+        if (exact) return exact.replace(/\s+/g, "").toLowerCase();
+
+        
+        const els = Array.from(
+          card.querySelectorAll("span, sup, small, strong, div")
+        );
+        for (const el of els) {
+          const t = (el.textContent || "").trim();
+          if (/^\d+$/.test(t)) {
+            const cls = String(el.className || "").toLowerCase();
+            const aria = (el.getAttribute("aria-label") || "").toLowerCase();
+            const dc = (el.getAttribute("data-view-component") || "").toLowerCase();
+            if (
+              cls.includes("counter") ||
+              cls.includes("label") ||
+              aria.includes("times") ||
+              aria.includes("count") ||
+              dc.includes("counter")
+            ) {
+              return `x${t}`;
+            }
+          }
+        }
+        return "";
       };
 
-      
       const cards = Array.from(
         document.querySelectorAll(
           'a[href*="/achievements/"], a[data-hovercard-type="achievement"], div[data-test-selector="profile-collection-card"], article'
@@ -85,13 +105,11 @@ function esc(s) {
       );
 
       const uniq = new Map();
-
       for (const card of cards) {
         const img =
           card.querySelector(
             'img[class*="achievement"], img[alt*="Achievement"], img[src*="/achievements/"], img[src*="/achievements"]'
           ) || card.querySelector("img");
-
         if (!img) continue;
 
         const src = img.getAttribute("src");
@@ -115,14 +133,10 @@ function esc(s) {
             ? `https://github.com${a.getAttribute("href")}`
             : null;
 
-        
         const key = `${title}__${src}`;
-        if (!uniq.has(key)) {
-          uniq.set(key, { src, title, count, href });
-        }
+        if (!uniq.has(key)) uniq.set(key, { src, title, count, href });
       }
 
-      
       if (!uniq.size) {
         const imgs = Array.from(
           document.querySelectorAll('img[alt*="Achievement"]')
@@ -131,16 +145,12 @@ function esc(s) {
           const src = i.getAttribute("src");
           if (!src) continue;
           const title = clean(i.getAttribute("alt"));
-          const count = "";
-          const href = null;
-          uniq.set(`${title}__${src}`, { src, title, count, href });
+          uniq.set(`${title}__${src}`, { src, title, count: "", href: null });
         }
       }
 
       return Array.from(uniq.values());
     });
-
-    await page.close();
   } catch (e) {
     console.error("Scrape error:", e);
   }
@@ -151,16 +161,11 @@ function esc(s) {
   const gap = 24;
   const headerH = 80;
   const nameH = 34;
-  const countH = 18;
+  const countH = 24;
 
   const rows = Math.max(1, Math.ceil(items.length / cols));
   const width = cols * (size + gap) + gap;
- 
-  const height =
-    headerH +
-    rows * (size + nameH + countH + gap) +
-    gap;
-
+  const height = headerH + rows * (size + nameH + countH + gap) + gap;
   const generatedAt = new Date().toISOString();
 
   const cards = items.length
@@ -174,10 +179,17 @@ function esc(s) {
             : URL;
 
           
-          const countLine = it.count
-            ? `<div style="margin-top:2px; font:700 12px system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial; opacity:.9;">${esc(
-                it.count
-              )}</div>`
+          const countPill = it.count
+            ? `<div style="
+                  display:inline-block;
+                  margin-top:6px;
+                  padding:2px 8px;
+                  font:700 12px system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;
+                  border-radius:999px;
+                  background:#f9a8d4;
+                  color:#111827;
+                  box-shadow:0 0 0 1px rgba(0,0,0,.25) inset;
+                ">${esc(it.count)}</div>`
             : "";
 
           return `
@@ -189,7 +201,7 @@ function esc(s) {
               <div style="font:600 14px system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:${size}px;">
                 ${label}
               </div>
-              ${countLine}
+              ${countPill}
             </div>
           </a>`;
         })
@@ -229,6 +241,7 @@ function esc(s) {
       grid-template-columns: repeat(${cols}, ${size}px);
       gap: ${gap}px;
       justify-content: center;
+      align-items: start;
     }
     .footer {
       margin-top: 14px;
@@ -251,9 +264,11 @@ function esc(s) {
 </html>`;
 
   const page2 = await browser.newPage();
-  await page2.setViewport({ width: width + 48, height: Math.min(height + 48, 8000) });
+  await page2.setViewport({
+    width: width + 48,
+    height: Math.min(height + 48, 8000),
+  });
   await page2.setContent(html, { waitUntil: "load" });
-
   await new Promise((r) => setTimeout(r, 600));
   await page2.screenshot({ path: OUT_FILE, fullPage: true });
   await page2.close();
