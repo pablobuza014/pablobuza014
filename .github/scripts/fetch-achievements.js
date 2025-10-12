@@ -25,7 +25,8 @@ function esc(s) {
 
   const items = await page.evaluate(() => {
     
-    const candidates = Array.from(document.querySelectorAll('img[src*="achievements/"]'));
+    const candidates = Array.from(document.querySelectorAll('img.achievement-badge-card, img[src*="githubassets.com/assets/"]'));
+
 
     const uniq = new Map();
     for (const img of candidates) {
