@@ -346,6 +346,15 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
 <br/>
 <br/>
 
+<!-- VISITORS PANEL -->
+<p align="center">
+  <img src="assets/visitors.svg?v=1" alt="Visitors">
+</p>
+
+<br/>
+<br/>
+<br/>
+<br/>
 
 
 <!-- LEGAL / COPYRIGHT NOTICE -->
