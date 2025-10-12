@@ -149,7 +149,7 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
     <br/>
     <img src="https://github-profile-trophy.vercel.app/?username=pablobuza014&theme=onestar&no-bg=true&no-frame=true&v=2" alt="Trophies" />
     <br/>
-    <img src="assets/achievements.png" alt="GitHub Achievements" />
+    <img src="assets/achievements.png?v=<?= timestamp ?>" alt="GitHub Achievements" />
   </a>
 </p>
 
