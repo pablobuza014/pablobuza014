@@ -5,7 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const REPO = process.env.GITHUB_REPOSITORY || "pablobuza014/pablobuza014"; // owner/repo
+const REPO = process.env.GITHUB_REPOSITORY || "pablobuza014/pablobuza014";
 const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 const OUT_DIR = path.resolve(__dirname, "../../assets");
 const OUT_SVG = path.join(OUT_DIR, "visitors.svg");
@@ -13,7 +13,7 @@ const OUT_JSON = path.join(OUT_DIR, "visitors-history.json");
 
 // ---- Utils
 const fmtDate = (d) => new Date(d).toISOString().slice(0, 10);
-const today = () => fmtDate(new Date());
+const todayISO = () => fmtDate(new Date());
 function ensureDir(p) { if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true }); }
 function readJSON(p, fallback) { try { return JSON.parse(fs.readFileSync(p, "utf8")); } catch { return fallback; } }
 function writeFile(p, data) { fs.writeFileSync(p, data); }
@@ -57,7 +57,7 @@ function mergeHistory(history, latestMap) {
   for (const [day, count] of Object.entries(latestMap)) {
     h[day] = Math.max(Number(h[day] || 0), Number(count || 0));
   }
-
+  
   const days = lastNDays(365);
   const merged = {};
   for (const d of days) merged[d] = Number(h[d] || 0);
@@ -69,7 +69,7 @@ function buildStats(history) {
   const days = Object.keys(history).sort();
   const vals = days.map(d => history[d]);
   const total = vals.reduce((a,b)=>a+b,0);
-  const todayKey = today();
+  const todayKey = todayISO();
   const todayVal = history[todayKey] || 0;
   const last7 = vals.slice(-7);
   const avg7 = last7.length ? Math.round(last7.reduce((a,b)=>a+b,0)/last7.length) : 0;
@@ -89,6 +89,8 @@ function renderSVG({ total, today, avg7, series30 }) {
     const y = h - padXY - (v / max) * (h - 2 * padXY);
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(" ");
+
+  const updated = todayISO();
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="140" role="img" aria-label="Visitors (GitHub Traffic)">
@@ -126,7 +128,7 @@ function renderSVG({ total, today, avg7, series30 }) {
     <text class="small label" x="130" y="0">AVG(7d)</text>
     <text class="small" x="220" y="0" fill="url(#g)">${avg7}</text>
     <text class="small label" x="300" y="0">UPDATED</text>
-    <text class="small" x="380" y="0">${escapeXML(today())}</text>
+    <text class="small" x="380" y="0">${escapeXML(updated)}</text>
   </g>
 </svg>`;
 }
