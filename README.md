@@ -148,13 +148,10 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <a href="https://github.com/ryo-ma/github-profile-trophy" target="_blank" rel="noopener noreferrer">
     <br/>
     <img src="https://github-profile-trophy.vercel.app/?username=pablobuza014&theme=onestar&no-bg=true&no-frame=true&v=2" alt="Trophies" />
+    <br/>
+    <img src="assets/achievements.png" alt="GitHub Achievements" />
   </a>
 </p>
-<br/>
-
-<!-- ACHIEVEMENTS:START -->
-<!-- (auto-generated, do not edit) -->
-<!-- ACHIEVEMENTS:END -->
 
 <br/>
 <br/>
