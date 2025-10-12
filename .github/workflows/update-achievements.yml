@@ -12,7 +12,8 @@ on:
     paths:
       - "README.md"
       - ".github/workflows/update-achievements.yml"
-      - ".github/scripts/fetch-achievements.js"
+      - ".github/scripts/build-achievements-image.js"
+      # - ".github/scripts/fetch-achievements.js"
 
 jobs:
   build:
@@ -34,10 +35,12 @@ jobs:
           npm init -y
           npm install puppeteer@22.15.0
 
-      - name: Capture achievements
+      # - name: Capture achievements
+      - name: Build achievements image
         env:
           GH_USERNAME: "pablobuza014"
-        run: node .github/scripts/screenshot-achievements.js
+        #run: node .github/scripts/screenshot-achievements.js
+        run: node .github/scripts/build-achievements-image.js
 
       - name: Commit & push if changed
         run: |
