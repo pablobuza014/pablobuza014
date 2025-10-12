@@ -146,9 +146,14 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
 | <a href="https://git.io/streak-stats" target="_blank" rel="noopener noreferrer"><img alt="pablobuza014's GitHub Streak" src="https://streak-stats.demolab.com?user=pablobuza014&theme=dark&hide_border=true&v=2" height="175" /></a> | <img src="https://raw.githubusercontent.com/pablobuza014/pablobuza014/main/assets/activity-years.svg" alt="Contributions timeline (2021–present)" width="520" /> |
 <p align="center">
   <a href="https://github.com/ryo-ma/github-profile-trophy" target="_blank" rel="noopener noreferrer">
+    <br/>
     <img src="https://github-profile-trophy.vercel.app/?username=pablobuza014&theme=onestar&no-bg=true&no-frame=true&v=2" alt="Trophies" />
   </a>
 </p>
+<br/>
+<!-- ACHIEVEMENTS:START -->
+<!-- (auto-generated, do not edit) -->
+<!-- ACHIEVEMENTS:END -->
 
 <br/>
 <br/>
@@ -364,4 +369,3 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
     alt="Legal typing note" />
 
 </div>
-
