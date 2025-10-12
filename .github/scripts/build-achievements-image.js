@@ -28,19 +28,16 @@ function esc(s) {
 
     await page.goto(URL, { waitUntil: "networkidle2" });
 
-    
+  
     try {
       await page.evaluate(async () => {
         await new Promise((resolve) => {
-          let total = 0;
+          let n = 0;
           const step = () => {
             window.scrollBy(0, Math.max(200, window.innerHeight * 0.8));
-            total += 1;
-            if (window.innerHeight + window.scrollY >= document.body.scrollHeight || total > 10) {
-              resolve();
-            } else {
-              setTimeout(step, 200);
-            }
+            n++;
+            if (window.innerHeight + window.scrollY >= document.body.scrollHeight || n > 10) resolve();
+            else setTimeout(step, 180);
           };
           step();
         });
@@ -55,7 +52,10 @@ function esc(s) {
 
     
     items = await page.evaluate(() => {
+      
       const all = Array.from(document.querySelectorAll('img[alt^="Achievement"]'));
+
+    
       const bigBadges = all.filter((img) => {
         const r = img.getBoundingClientRect();
         return r.width >= 96 && r.height >= 96;
@@ -68,29 +68,42 @@ function esc(s) {
         if (!src) continue;
 
         
-        let card = img.closest("a")?.parentElement || img.closest("div");
-        if (!card) card = img.parentElement;
+        let card = img.closest("a")?.parentElement || img.closest("div") || img.parentElement;
 
-        
+       
         let title = "";
+        const a = img.closest("a");
         const titleNode =
           card.querySelector("h3, h4, strong") ||
           card.querySelector('div[dir="auto"]') ||
-          img.closest("a")?.querySelector("h3, h4, strong");
+          (a && (a.querySelector("h3, h4, strong") || a));
         if (titleNode) title = (titleNode.textContent || "").trim();
         if (!title) {
-          title = (img.getAttribute("alt") || "").replace(/^Achievement:\s*/i, "").trim();
+          const aria = (a && (a.getAttribute("aria-label") || a.getAttribute("title"))) || "";
+          title = (aria || img.getAttribute("alt") || "").replace(/^Achievement:\s*/i, "").trim();
         }
 
         
         let count = "";
+        const containerRect = (card || img).getBoundingClientRect();
+        const area = {
+          top: Math.min(containerRect.top, img.getBoundingClientRect().top) - 8,
+          left: Math.min(containerRect.left, img.getBoundingClientRect().left) - 8,
+          right: Math.max(containerRect.right, img.getBoundingClientRect().right) + 8,
+          bottom: Math.max(containerRect.bottom, img.getBoundingClientRect().bottom) + 8,
+        };
+        const isInside = (el) => {
+          const q = el.getBoundingClientRect();
+          const cx = (q.left + q.right) / 2;
+          const cy = (q.top + q.bottom) / 2;
+          return cx >= area.left && cx <= area.right && cy >= area.top && cy <= area.bottom;
+        };
         const pill = Array.from(card.querySelectorAll("span, sup"))
+          .filter(isInside)
           .map((n) => (n.textContent || "").trim())
           .find((t) => /^x\d+$/i.test(t));
         if (pill) count = pill;
 
-        
-        const a = img.closest("a");
         const href = a ? a.getAttribute("href") : null;
 
         if (!uniq.has(src)) {
@@ -106,13 +119,16 @@ function esc(s) {
     console.error("Scrape error:", e);
   }
 
-
-  const cols = 4;
+  
   const size = 128;
-  const gap = 24;
+  const gap  = 24;
   const headerH = 90;
-  const rows = Math.max(1, Math.ceil(items.length / cols));
-  const width = cols * (size + gap) + gap;
+
+  const count = Math.max(1, items.length);
+  const cols = Math.min(8, Math.max(3, Math.ceil(Math.sqrt(count))));
+  const rows = Math.ceil(count / cols);
+
+  const width  = cols * (size + gap) + gap;
   const height = headerH + rows * (size + 36 + gap) + gap;
   const generatedAt = new Date().toISOString();
 
