@@ -84,7 +84,7 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
     src="https://readme-typing-svg.herokuapp.com?font=Orbitron&weight=700&size=22&pause=1000&color=00E7F7&center=true&vCenter=true&width=900&lines=DOWNLOAD+OR+SCAN+MY+CURRICULUM+VITAE"
     alt="DOWNLOAD O SCAN MY CURRICULUM VITAE" />
     <a href="https://drive.google.com/uc?export=download&id=1MzVCuE64A1AkMM9hPkIr0icho1XXJUpA">
-      <img src="https://img.shields.io/badge/DOWNLOAD%20PDF-111827?style=for-the-badge&logo=adobeacrobatreader&logoColor=F87171" alt="Download CV">
+      <img src="https://img.shields.io/badge/DOWNLOAD%20CV-111827?style=for-the-badge&logo=adobeacrobatreader&logoColor=F87171" alt="Download CV">
     </a>
   <!-- QR -->
   <p>
@@ -115,7 +115,8 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <a href="https://www.linkedin.com/in/pablo-buza-mira/" target="_blank" rel="noopener noreferrer" title="LinkedIn">
     <img src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="LinkedIn" width="40" height="30";<code>@pablo-buza-mira</code>
   </a>
-  &nbsp;•&nbsp;
+    <br/>
+  
   <a href="https://www.instagram.com/pablobuza014" target="_blank" rel="noopener noreferrer" title="Instagram">
     <img src="https://cdn.simpleicons.org/instagram/E4405F" height="22" alt="Instagram"/>&nbsp;<code>@pablobuza014</code>
   </a>
