@@ -1,5 +1,4 @@
 // .github/scripts/build-achievements-image.js
-
 const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer");
@@ -28,43 +27,51 @@ function esc(s) {
     );
     await page.goto(URL, { waitUntil: "networkidle2" });
 
-
     try {
-      await page.waitForSelector('img.achievement-badge-card, img[alt^="Achievement"]', { timeout: 15000 });
+      await page.waitForSelector('a[href*="/achievements/"] img', { timeout: 15000 });
     } catch (_) {}
 
+    
     items = await page.evaluate(() => {
-      const nodes = Array.from(
-        document.querySelectorAll('img.achievement-badge-card, img[alt^="Achievement"], img[src*="/assets/"]')
-      );
+      const imgs = Array.from(document.querySelectorAll('a[href*="/achievements/"] img'));
       const uniq = new Map();
-      for (const img of nodes) {
+
+      for (const img of imgs) {
         const src = img.getAttribute("src");
         if (!src) continue;
-        const alt = img.getAttribute("alt") || "";
-        const looksBadge =
-          alt.toLowerCase().includes("achievement") ||
-          (img.className || "").toLowerCase().includes("achievement");
-        if (!looksBadge) continue;
 
-        const parentA = img.closest("a");
-        const title =
-          (parentA && (parentA.getAttribute("aria-label") || parentA.getAttribute("title"))) ||
-          img.getAttribute("title") ||
-          alt.replace(/^Achievement:\s*/i, "");
+        const a = img.closest('a[href*="/achievements/"]');
+        const card = a ? (a.parentElement || a) : null;
 
+        
+        let title = "";
+        if (card) {
+          const titleNode =
+            card.querySelector("h3, h4, strong") ||
+            card.querySelector('div[dir="auto"]') ||
+            a.querySelector("h3, h4, strong");
+          if (titleNode) title = (titleNode.textContent || "").trim();
+        }
+        if (!title) {
+          title = (img.getAttribute("alt") || "").replace(/^Achievement:\s*/i, "").trim();
+        }
+
+       
         let count = "";
-        const countNode =
-          img.parentElement &&
-          (img.parentElement.querySelector("span, sup, div[data-view-component='true']") ||
-            img.closest("div")?.querySelector("span, sup"));
-        if (countNode) {
-          const t = (countNode.textContent || "").trim();
-          if (/x\d+/i.test(t)) count = t;
+        if (card) {
+          const pill = Array.from(card.querySelectorAll("span, sup"))
+            .map(n => (n.textContent || "").trim())
+            .find(t => /^x\d+$/i.test(t));
+          if (pill) count = pill;
         }
 
         if (!uniq.has(src)) {
-          uniq.set(src, { src, title, count, href: parentA ? parentA.getAttribute("href") : null });
+          uniq.set(src, {
+            src,
+            title,
+            count,
+            href: a ? a.getAttribute("href") : null,
+          });
         }
       }
       return Array.from(uniq.values());
@@ -76,10 +83,10 @@ function esc(s) {
   }
 
 
-  const cols = 4;                     
-  const size = 128;                  
-  const gap = 24;                    
-  const headerH = 90;                 
+  const cols = 4;
+  const size = 128;
+  const gap = 24;
+  const headerH = 90;
   const rows = Math.max(1, Math.ceil(items.length / cols));
   const width = cols * (size + gap) + gap;
   const height = headerH + rows * (size + 36 + gap) + gap;
@@ -109,35 +116,11 @@ function esc(s) {
   <title>${esc(USER)} · Achievements</title>
   <style>
     :root { color-scheme: dark; }
-    body {
-      margin: 0;
-      background: #0b1220;
-      color: #e5e7eb;
-    }
-    .wrap {
-      width: ${width}px;
-      min-height: ${height}px;
-      padding: 24px;
-      box-sizing: border-box;
-    }
-    h1 {
-      margin: 4px 0 12px 0;
-      font: 800 22px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial;
-      letter-spacing:.3px;
-      color:#c7d2fe;
-      text-align:center;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(${cols}, ${size}px);
-      gap: ${gap}px;
-      justify-content: center;
-    }
-    .footer {
-      margin-top: 12px;
-      font: 500 12px system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial;
-      opacity:.7; text-align:center;
-    }
+    body { margin: 0; background: #0b1220; color: #e5e7eb; }
+    .wrap { width: ${width}px; min-height: ${height}px; padding: 24px; box-sizing: border-box; }
+    h1 { margin: 4px 0 12px 0; font: 800 22px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; letter-spacing:.3px; color:#c7d2fe; text-align:center; }
+    .grid { display: grid; grid-template-columns: repeat(${cols}, ${size}px); gap: ${gap}px; justify-content: center; }
+    .footer { margin-top: 12px; font: 500 12px system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial; opacity:.7; text-align:center; }
   </style>
 </head>
 <body>
@@ -151,11 +134,9 @@ function esc(s) {
 </body>
 </html>`;
 
-
   const page2 = await browser.newPage();
   await page2.setViewport({ width: width + 48, height: Math.min(height + 48, 8000) });
   await page2.setContent(html, { waitUntil: "load" });
-
   await new Promise(r => setTimeout(r, 600));
   await page2.screenshot({ path: OUT_FILE, fullPage: true });
   await page2.close();
