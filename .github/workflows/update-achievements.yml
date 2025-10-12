@@ -1,4 +1,4 @@
-name: Update Achievements Slider
+name: Update Achievements Image
 
 on:
   workflow_dispatch: {}
@@ -21,27 +21,28 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install dependencies
+      - name: Install deps
         run: |
           npm init -y
           npm install puppeteer@22.15.0
 
-      - name: Run fetch-achievements
+      - name: Capture achievements
         env:
           GH_USERNAME: "pablobuza014"
-          README_PATH: "README.md"
-        run: node .github/scripts/fetch-achievements.js
+        run: node .github/scripts/screenshot-achievements.js
 
       - name: Commit & push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --quiet && echo "No changes" || git commit -m "chore: update achievements slider"
+          git add assets/achievements.png
+          git diff --cached --quiet && echo "No image changes" || git commit -m "chore: update achievements image"
           git push
