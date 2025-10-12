@@ -91,21 +91,22 @@ function renderSVG({ total, today, avg7, series30 }) {
   }).join(" ");
 
   const updated = todayISO();
+  const SVG_H = 160;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="140" role="img" aria-label="Visitors (GitHub Traffic)">
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="${SVG_H}" role="img" aria-label="Visitors (GitHub Traffic)">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#00E7F7"/><stop offset="50%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#22C55E"/>
     </linearGradient>
     <style>
       .mono{ font:700 24px 'JetBrains Mono',Consolas,monospace }
-      .small{ font:700 13px 'JetBrains Mono',Consolas,monospace }
+      .small{ font:700 12px 'JetBrains Mono',Consolas,monospace }  /* ↓ 13→12 */
       .label{ fill:#94a3b8 }
     </style>
   </defs>
   <rect width="100%" height="100%" rx="16" fill="#0b1220"/>
-  <rect x="1.5" y="1.5" width="757" height="137" rx="14" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <rect x="1.5" y="1.5" width="757" height="${SVG_H - 3}" rx="14" fill="none" stroke="url(#g)" stroke-width="2"/>
 
   <!-- ODOMETER -->
   <g transform="translate(24,32)">
@@ -114,7 +115,7 @@ function renderSVG({ total, today, avg7, series30 }) {
   </g>
 
   <!-- SPARKLINE (30d) -->
-  <g transform="translate(300,24)">
+  <g transform="translate(300,20)">  <!-- ↑ antes 24 -->
     <text class="label small" x="0" y="0">LAST 30 DAYS</text>
     <rect x="0" y="8" width="420" height="54" rx="8" fill="#0f172a"/>
     ${points ? `<polyline fill="none" stroke="url(#g)" stroke-width="2.5" points="${points}"/>` : ""}
@@ -122,7 +123,7 @@ function renderSVG({ total, today, avg7, series30 }) {
   </g>
 
   <!-- STATS -->
-  <g transform="translate(24,100)">
+  <g transform="translate(24,125)">
     <text class="small label" x="0" y="0">TODAY</text>
     <text class="small" x="70" y="0" fill="url(#g)">${today}</text>
     <text class="small label" x="130" y="0">AVG(7d)</text>
@@ -132,6 +133,7 @@ function renderSVG({ total, today, avg7, series30 }) {
   </g>
 </svg>`;
 }
+
 
 function odometer(num){
   return num.split("").map((d,i)=>`
@@ -146,9 +148,10 @@ function landmarkLabels(series30){
   if (!series30.length) return "";
   const first = series30[0].day;
   const last  = series30[series30.length-1].day;
-  return `<text class="small label" x="0" y="74">${escapeXML(first)}</text>
-          <text class="small label" x="360" y="74">${escapeXML(last)}</text>`;
+  return `<text class="small label" x="0" y="76">${escapeXML(first)}</text>
+          <text class="small label" x="360" y="76">${escapeXML(last)}</text>`;
 }
+
 
 
 (async () => {
