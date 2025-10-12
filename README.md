@@ -28,6 +28,12 @@
         <img src="https://img.shields.io/badge/DOWNLOAD-111827?style=for-the-badge&logo=adobe&logoColor=F87171" alt="Download"/>
       </a>
     </p>
+    <br/>
+    <p>
+      <a href="https://ko-fi.com/X8X81MPSST" target="_blank" rel="noopener noreferrer">
+        <img src="https://img.shields.io/badge/☕%20SUPPORT%20ME%20WITH%20A%20COFFEE!-111827?style=for-the-badge&logo=ko-fi&logoColor=F87171" alt="Support me with a coffee!"/>
+      </a>
+    </p>
   </details>
 </div>
 
