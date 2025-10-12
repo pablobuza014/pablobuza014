@@ -50,69 +50,47 @@ function esc(s) {
       await page.waitForSelector('img[alt^="Achievement"]', { timeout: 15000 });
     } catch (_) {}
 
-    
+
     items = await page.evaluate(() => {
-      
-      const all = Array.from(document.querySelectorAll('img[alt^="Achievement"]'));
+  
+  const all = Array.from(document.querySelectorAll('img[alt^="Achievement"]'));
+
+  
+  const big = all.filter(img => {
+    const r = img.getBoundingClientRect();
+    return r.width >= 96 && r.height >= 96;
+  });
+
+  const seen = new Set();
+  const out = [];
+
+  for (const img of big) {
+    const src = img.getAttribute("src");
+    if (!src || seen.has(src)) continue;
+    seen.add(src);
 
     
-      const bigBadges = all.filter((img) => {
-        const r = img.getBoundingClientRect();
-        return r.width >= 96 && r.height >= 96;
-      });
+    const title = (img.getAttribute("alt") || "")
+      .replace(/^Achievement:\s*/i, "")
+      .trim();
 
-      const uniq = new Map();
+    
+    const card = img.closest("a") || img.parentElement;
+    let count = "";
+    if (card) {
+      const pill = Array.from(card.querySelectorAll("span, sup"))
+        .map(n => (n.textContent || "").trim())
+        .find(t => /^x\d+$/i.test(t));
+      if (pill) count = pill;
+    }
 
-      for (const img of bigBadges) {
-        const src = img.getAttribute("src");
-        if (!src) continue;
+    out.push({ src, title, count });
+  }
 
-        
-        let card = img.closest("a")?.parentElement || img.closest("div") || img.parentElement;
+  return out;
+});
 
-       
-        let title = "";
-        const a = img.closest("a");
-        const titleNode =
-          card.querySelector("h3, h4, strong") ||
-          card.querySelector('div[dir="auto"]') ||
-          (a && (a.querySelector("h3, h4, strong") || a));
-        if (titleNode) title = (titleNode.textContent || "").trim();
-        if (!title) {
-          const aria = (a && (a.getAttribute("aria-label") || a.getAttribute("title"))) || "";
-          title = (aria || img.getAttribute("alt") || "").replace(/^Achievement:\s*/i, "").trim();
-        }
 
-        
-        let count = "";
-        const containerRect = (card || img).getBoundingClientRect();
-        const area = {
-          top: Math.min(containerRect.top, img.getBoundingClientRect().top) - 8,
-          left: Math.min(containerRect.left, img.getBoundingClientRect().left) - 8,
-          right: Math.max(containerRect.right, img.getBoundingClientRect().right) + 8,
-          bottom: Math.max(containerRect.bottom, img.getBoundingClientRect().bottom) + 8,
-        };
-        const isInside = (el) => {
-          const q = el.getBoundingClientRect();
-          const cx = (q.left + q.right) / 2;
-          const cy = (q.top + q.bottom) / 2;
-          return cx >= area.left && cx <= area.right && cy >= area.top && cy <= area.bottom;
-        };
-        const pill = Array.from(card.querySelectorAll("span, sup"))
-          .filter(isInside)
-          .map((n) => (n.textContent || "").trim())
-          .find((t) => /^x\d+$/i.test(t));
-        if (pill) count = pill;
-
-        const href = a ? a.getAttribute("href") : null;
-
-        if (!uniq.has(src)) {
-          uniq.set(src, { src, title, count, href });
-        }
-      }
-
-      return Array.from(uniq.values());
-    });
 
     await page.close();
   } catch (e) {
