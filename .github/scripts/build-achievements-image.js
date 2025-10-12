@@ -10,10 +10,7 @@ const OUT_FILE = path.join(OUT_DIR, "achievements.png");
 const URL = `https://github.com/${USER}?tab=achievements`;
 
 function esc(s) {
-  return String(s || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 (async () => {
@@ -38,7 +35,7 @@ function esc(s) {
       );
     } catch (_) {}
 
-    // ===== SCRAPING =====
+    // -------- SCRAPE --------
     items = await page.evaluate(() => {
       const clean = (s) =>
         String(s || "")
@@ -47,46 +44,34 @@ function esc(s) {
           .trim();
 
       const getTitleFromCard = (card) => {
-        const candidates = Array.from(
-          card.querySelectorAll("h3, h4, strong, div, span")
-        )
+        const candidates = Array.from(card.querySelectorAll("h3, h4, strong, div, span"))
           .map((el) => (el.textContent || "").trim())
-          .filter(
-            (t) =>
-              t &&
-              !/^x?\s*\d+$/i.test(t) &&
-              /[A-Za-z]/.test(t) &&
-              t.length <= 48
-          );
+          .filter((t) => t && !/^x?\s*\d+$/i.test(t) && /[A-Za-z]/.test(t) && t.length <= 48);
         return candidates[0] ? clean(candidates[0]) : "";
       };
 
+      
       const getCountFromCard = (card) => {
-        
-        const exact = Array.from(
-          card.querySelectorAll("span, sup, small, strong, div")
-        )
-          .map((el) => (el.textContent || "").trim())
-          .find((t) => /^(?:x|×)\s*\d+$/i.test(t));
-        if (exact) return exact.replace(/\s+/g, "").toLowerCase();
+       
+        const text = (card.innerText || "").replace(/\s+/g, " ").trim();
 
         
-        const els = Array.from(
-          card.querySelectorAll("span, sup, small, strong, div")
-        );
+        let m = text.match(/(?:^|\s)(?:x|×)\s*(\d+)(?=\s|$)/i);
+        if (m) return `x${m[1]}`;
+
+        
+        m = text.match(/(\d+)\s*(?:times|vez|veces)/i);
+        if (m) return `x${m[1]}`;
+
+        
+        const els = Array.from(card.querySelectorAll("span, sup, small, strong, div"));
         for (const el of els) {
           const t = (el.textContent || "").trim();
           if (/^\d+$/.test(t)) {
             const cls = String(el.className || "").toLowerCase();
             const aria = (el.getAttribute("aria-label") || "").toLowerCase();
             const dc = (el.getAttribute("data-view-component") || "").toLowerCase();
-            if (
-              cls.includes("counter") ||
-              cls.includes("label") ||
-              aria.includes("times") ||
-              aria.includes("count") ||
-              dc.includes("counter")
-            ) {
+            if (cls.includes("counter") || cls.includes("label") || aria.includes("times") || aria.includes("count") || dc.includes("counter")) {
               return `x${t}`;
             }
           }
@@ -117,9 +102,7 @@ function esc(s) {
 
         const a = card.closest("a") || card.querySelector("a") || card;
 
-        let title =
-          (a.getAttribute?.("aria-label") || a.getAttribute?.("title") || "") ||
-          "";
+        let title = (a.getAttribute?.("aria-label") || a.getAttribute?.("title") || "") || "";
         title = clean(title);
         if (!title) title = getTitleFromCard(card);
         if (!title) title = clean(img.getAttribute("alt") || "Achievement");
@@ -138,9 +121,7 @@ function esc(s) {
       }
 
       if (!uniq.size) {
-        const imgs = Array.from(
-          document.querySelectorAll('img[alt*="Achievement"]')
-        );
+        const imgs = Array.from(document.querySelectorAll('img[alt*="Achievement"]'));
         for (const i of imgs) {
           const src = i.getAttribute("src");
           if (!src) continue;
@@ -151,11 +132,13 @@ function esc(s) {
 
       return Array.from(uniq.values());
     });
+
+    await page.close();
   } catch (e) {
     console.error("Scrape error:", e);
   }
 
-  // ===== RENDER =====
+  // -------- RENDER --------
   const cols = 4;
   const size = 128;
   const gap = 24;
@@ -178,7 +161,6 @@ function esc(s) {
               : `https://github.com${it.href}`
             : URL;
 
-          
           const countPill = it.count
             ? `<div style="
                   display:inline-block;
@@ -264,10 +246,7 @@ function esc(s) {
 </html>`;
 
   const page2 = await browser.newPage();
-  await page2.setViewport({
-    width: width + 48,
-    height: Math.min(height + 48, 8000),
-  });
+  await page2.setViewport({ width: width + 48, height: Math.min(height + 48, 8000) });
   await page2.setContent(html, { waitUntil: "load" });
   await new Promise((r) => setTimeout(r, 600));
   await page2.screenshot({ path: OUT_FILE, fullPage: true });
