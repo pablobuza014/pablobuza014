@@ -34,7 +34,7 @@ const URL = `https://github.com/${USER}?tab=achievements`;
     document.documentElement.scrollHeight
   ));
   await page.setViewport({ width: 1280, height: Math.min(fullHeight, 5000) });
-  await page.waitForTimeout(800);
+  await new Promise(r => setTimeout(r, 800));
 
 
   const clip = await page.evaluate(() => {
