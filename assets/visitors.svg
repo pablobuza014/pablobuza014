@@ -54,7 +54,7 @@
   
     <g transform="translate(204,8)">
       <rect x="0" y="-22" width="30" height="40" rx="8" fill="#0f172a" stroke="#1f2937"/>
-      <text class="mono" x="6" y="8" fill="url(#g)">4</text>
+      <text class="mono" x="6" y="8" fill="url(#g)">8</text>
     </g>
   
   </g>
@@ -63,18 +63,18 @@
   <g transform="translate(300,20)">
     <text class="label small" x="0" y="0">LAST 14 DAYS</text>
     <rect x="0" y="8" width="420" height="54" rx="8" fill="#0f172a"/>
-    <polyline fill="none" stroke="url(#g)" stroke-width="2.5" points="6.0,48.0 37.4,48.0 68.8,48.0 100.2,48.0 131.5,48.0 162.9,48.0 194.3,48.0 225.7,48.0 257.1,48.0 288.5,48.0 319.8,48.0 351.2,48.0 382.6,37.9 414.0,6.0"/>
-    <text class="small label" x="0" y="76">2025-09-29</text>
-          <text class="small label" x="360" y="76">2025-10-12</text>
+    <polyline fill="none" stroke="url(#g)" stroke-width="2.5" points="6.0,48.0 37.4,48.0 68.8,48.0 100.2,48.0 131.5,48.0 162.9,48.0 194.3,48.0 225.7,48.0 257.1,48.0 288.5,48.0 319.8,48.0 351.2,38.0 382.6,6.0 414.0,47.9"/>
+    <text class="small label" x="0" y="76">2025-09-30</text>
+          <text class="small label" x="360" y="76">2025-10-13</text>
   </g>
 
   <!-- STATS -->
   <g transform="translate(24,125)">
     <text class="small label" x="0" y="0">TODAY</text>
-    <text class="small" x="70" y="0" fill="url(#g)">342</text>
+    <text class="small" x="70" y="0" fill="url(#g)">1</text>
     <text class="small label" x="130" y="0">AVG(7d)</text>
     <text class="small" x="220" y="0" fill="url(#g)">61</text>
     <text class="small label" x="300" y="0">UPDATED</text>
-    <text class="small text" x="380" y="0">2025-10-12 22:20 UTC</text>
+    <text class="small text" x="380" y="0">2025-10-13 22:20 UTC</text>
   </g>
 </svg>
