@@ -90,7 +90,10 @@ This professional and multicultural profile is reflected in <strong>KhanaGO</str
 </h3>
 
 <h3 align="justify">
-<strong>KhanaGO</strong> is available on <strong>iOS</strong>, <strong>Android</strong>, and <a href="https://www.khanago.com" target="_blank"><strong>Browser</strong></a>.
+<strong>KhanaGO</strong> is available on 
+<a href="https://apps.apple.com/us/app/khanago-by-buza/id6765819995" target="_blank"><strong>iOS</strong></a>, 
+<a href="https://play.google.com/store/apps/details?id=com.khanago.buza" target="_blank"><strong>Android</strong></a>, 
+and <a href="https://khanago.com" target="_blank"><strong>Browser</strong></a>.
 </h3>
 
 <br/>
