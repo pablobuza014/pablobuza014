@@ -82,17 +82,15 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
 <table>
   <tr>
     <td width="75%" valign="middle">
-      <h3 align="justify">
-        This professional and multicultural profile is reflected in <strong>KhanaGO</strong>, a digital product I created and developed by combining software development, product design, project management, and user-centered problem solving.
-      </h3>
-
-      <h3 align="justify">
+      <p align="justify">
+        <strong>This professional and multicultural profile is reflected in KhanaGO</strong>, a digital product I created and developed by combining software development, product design, project management, and user-centered problem solving.
+      </p>
+      <p align="justify">
         <strong>KhanaGO</strong> lets users create and play live, geolocated gymkhanas anywhere in the world: tourist and school routes, educational assessments, urban and cultural tours, sports challenges, treasure hunts, nature adventures, or plans with friends and family.
-      </h3>
-
-      <h3 align="justify">
+      </p>
+      <p align="justify">
         <strong>KhanaGO</strong> is available on <strong>iOS</strong>, <strong>Android</strong>, and <strong>Browser</strong> (<strong>khanago.com</strong>).
-      </h3>
+      </p>
     </td>
     <td width="25%" align="center" valign="middle">
       <img src="https://www.gravatar.com/avatar/acb8fe9ce765c2514696d2c0fb2485a72619a4a4fa053a66a11d80883d094dc3?s=300" alt="KhanaGO logo" width="150"/>
