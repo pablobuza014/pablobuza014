@@ -174,7 +174,6 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <img src="https://img.shields.io/badge/-CSS-1572B6?style=flat&logo=css3&logoColor=white"/>
 </p>
 
-
 <h3 align="justify">FRAMEWORKS</h3>
 <p align="justify"><b>Frontend   </b>
   <img src="https://img.shields.io/badge/-Next.js-000000?style=flat&logo=next.js&logoColor=white"/>
@@ -185,10 +184,9 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
 <p align="justify"><b>Backend   </b>
   <img src="https://img.shields.io/badge/-Express-000000?style=flat&logo=express&logoColor=white"/>
   <img src="https://img.shields.io/badge/-FastAPI-009688?style=flat&logo=fastapi&logoColor=white"/>
+  <img src="https://img.shields.io/badge/-Django-092E20?style=flat&logo=django&logoColor=white"/>
   <img src="https://img.shields.io/badge/-Spring%20Boot-6DB33F?style=flat&logo=springboot&logoColor=white"/>
 </p>
-
-
 
 <h3 align="justify">APIs & AUTHENTICATION</h3>
 <p align="justify">
@@ -197,17 +195,34 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <img src="https://img.shields.io/badge/-OpenAPI%2fSwagger-85EA2D?style=flat&logo=swagger&logoColor=black"/>
   <img src="https://img.shields.io/badge/-JWT-000000?style=flat&logo=jsonwebtokens&logoColor=white"/>
   <img src="https://img.shields.io/badge/-OAuth%202.0-3D3C3C?style=flat"/>
+  <img src="https://img.shields.io/badge/-Postman-FF6C37?style=flat&logo=postman&logoColor=white"/>
 </p>
-
 
 <h3 align="justify">DATABASES</h3>
 <p align="justify">
+  <img src="https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white"/>
   <img src="https://img.shields.io/badge/-MySQL-4479A1?style=flat&logo=mysql&logoColor=white"/>
   <img src="https://img.shields.io/badge/-SQL%20Server-CC2927?style=flat&logo=microsoftsqlserver&logoColor=white"/>
   <img src="https://img.shields.io/badge/-MariaDB-003545?style=flat&logo=mariadb&logoColor=white"/>
   <img src="https://img.shields.io/badge/-HeidiSQL-009688?style=flat"/>
 </p>
 
+<h3 align="justify">CLOUD, DEPLOYMENT & PLATFORM SERVICES</h3>
+<p align="justify">
+  <img src="https://img.shields.io/badge/-Supabase-3FCF8E?style=flat&logo=supabase&logoColor=white"/>
+  <img src="https://img.shields.io/badge/-Render-46E3B7?style=flat&logo=render&logoColor=black"/>
+  <img src="https://img.shields.io/badge/-Cloudflare-F38020?style=flat&logo=cloudflare&logoColor=white"/>
+  <img src="https://img.shields.io/badge/-Firebase-FFCA28?style=flat&logo=firebase&logoColor=black"/>
+  <img src="https://img.shields.io/badge/-Resend-000000?style=flat"/>
+  <img src="https://img.shields.io/badge/-Google%20Cloud%20Console-4285F4?style=flat&logo=googlecloud&logoColor=white"/>
+</p>
+
+<h3 align="justify">APP BUILD & DISTRIBUTION</h3>
+<p align="justify">
+  <img src="https://img.shields.io/badge/-Expo%20EAS-000020?style=flat&logo=expo&logoColor=white"/>
+  <img src="https://img.shields.io/badge/-Apple%20Developer-000000?style=flat&logo=apple&logoColor=white"/>
+  <img src="https://img.shields.io/badge/-Google%20Play%20Console-414141?style=flat&logo=googleplay&logoColor=white"/>
+</p>
 
 <h3 align="justify">IDEs</h3>
 <p align="justify">
@@ -219,28 +234,27 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <img src="https://img.shields.io/badge/-Jupyter-FA0F00?style=flat&logo=jupyter&logoColor=white"/>
 </p>
 
-
-
-<h3 align="justify">DevOps</h3>
+<h3 align="justify">DevOps & CODE QUALITY</h3>
 <p align="justify">
   <img src="https://img.shields.io/badge/-Git-F05032?style=flat&logo=git&logoColor=white"/>
   <img src="https://img.shields.io/badge/-GitHub-181717?style=flat&logo=github&logoColor=white"/>
   <img src="https://img.shields.io/badge/-GitHub%20Actions-2088FF?style=flat&logo=github-actions&logoColor=white"/>
-  <img src="https://img.shields.io/badge/-Postman-FF6C37?style=flat&logo=postman&logoColor=white"/>
   <img src="https://img.shields.io/badge/-SonarQube-4E9BCD?style=flat&logo=sonarqube&logoColor=white"/>
   <img src="https://img.shields.io/badge/-SonarCloud-F3702A?style=flat&logo=sonarcloud&logoColor=white"/>
-  <img src="https://img.shields.io/badge/-Zenhub-5C4EE5?style=flat&logo=zenhub&logoColor=white"/>
-  <img src="https://img.shields.io/badge/-Clockify-03A9F4?style=flat&logo=clockify&logoColor=white"/>
 </p>
 
+<h3 align="justify">PROJECT TRACKING</h3>
+<p align="justify">
+  <img src="https://img.shields.io/badge/-Zenhub-5C4EE5?style=flat&logo=zenhub&logoColor=white"/>
+  <img src="https://img.shields.io/badge/-Clockify-03A9F4?style=flat&logo=clockify&logoColor=white"/>
+  <img src="https://img.shields.io/badge/-Toggl-E01B22?style=flat&logo=toggl&logoColor=white"/>
+</p>
 
 <h3 align="justify">TESTING</h3>
 <p align="justify">
   <img src="https://img.shields.io/badge/-JUnit-25A162?style=flat&logo=junit5&logoColor=white"/>
   <img src="https://img.shields.io/badge/-PyTest-0A9EDC?style=flat&logo=python&logoColor=white"/>
 </p>
-
-
 
 <h3 align="justify">MODELING, DESIGN & DOCUMENTATION</h3>
 <p align="justify">
@@ -260,8 +274,6 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <img src="https://img.shields.io/badge/-GitHub%20Pages-222222?style=flat&logo=github&logoColor=white"/>
 </p>
 
-
-
 <h3 align="justify">METHODOLOGIES & STANDARDS</h3>
 <p align="justify">
   <img src="https://img.shields.io/badge/-Agile-2496ED?style=flat&logo=agile&logoColor=white"/>
@@ -277,8 +289,6 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <img src="https://img.shields.io/badge/-SCAMPER-673AB7?style=flat"/>
 </p>
 
-
-
 <h3 align="justify">COMPUTATIONAL TOOLS</h3>
 <p align="justify">
   <img src="https://img.shields.io/badge/-GNU%20Octave-0790C0?style=flat&logo=octave&logoColor=white"/>
@@ -286,23 +296,16 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <img src="https://img.shields.io/badge/-GeoGebra-7851A9?style=flat&logo=geogebra&logoColor=white"/>
 </p>
 
-
-
 <h3 align="justify">MULTIMEDIA TOOLS</h3>
 <p align="justify">
   <img src="https://img.shields.io/badge/-Filmora-000000?style=flat&logo=filmora&logoColor=white"/>
   <img src="https://img.shields.io/badge/-Camtasia-06B03E?style=flat&logo=techsmith&logoColor=white"/>
 </p>
 
-
-
 <h3 align="justify">NETWORKING TOOLS</h3>
 <p align="justify">
   <img src="https://img.shields.io/badge/-Wireshark-1679A7?style=flat&logo=wireshark&logoColor=white"/>
-  <img src="https://img.shields.io/badge/-Postman-FF6C37?style=flat&logo=postman&logoColor=white"/>
 </p>
-
-
 
 <h3 align="justify">OPERATING SYSTEMS</h3>
 <p align="justify">
@@ -311,15 +314,12 @@ As a traveler and explorer, I consider myself ambitious yet patient in achieving
   <img src="https://img.shields.io/badge/-Windows-0078D6?style=flat&logo=windows&logoColor=white"/>
 </p>
 
-
-
 <h3 align="justify">OFFICE SUITE</h3>
 <p align="justify">
   <img src="https://img.shields.io/badge/-Google%20Workspace-4285F4?style=flat&logo=google&logoColor=white"/>
   <img src="https://img.shields.io/badge/-LibreOffice-18A303?style=flat&logo=libreoffice&logoColor=white"/>
   <img src="https://img.shields.io/badge/-Microsoft%20Office-D83B01?style=flat&logo=microsoft-office&logoColor=white"/>
 </p>
-
 
 <h3 align="justify">ITSM</h3>
 <p align="justify">
